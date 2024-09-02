@@ -3,8 +3,6 @@ import '@styles/globals.css';
 import '@styles/docPage.css';
 import '@styles/admonition.css';
 import BaseHtml from '@layouts/BaseHtml.astro';
-import InjectCodeCopy from '@components/InjectCodeCopy.astro';
-
 import {
   generateSidebarDSByUserOrder,
   type GenerateSidebarResponse,
@@ -24,7 +22,6 @@ import type { MarkdownHeading } from 'astro';
 import type { ContentEntryMap } from 'astro:content';
 import type { DocsLink } from '@base/pages/docs/[...slug].astro';
 import { getCollection } from 'astro:content';
-import { generateFullSlug } from '@utils/generateFullSlug';
 
 type Props = {
   title: string;
@@ -112,7 +109,6 @@ const image = settings.site.metadata.docs.image;
       <div class="min-w-0 px-32">
         <article class="doc">
           <slot />
-          <div class="mt-12 flex flex-row gap-20">
             {prevItem && <DocItemLink docItem={prevItem} />}
             {nextItem && <DocItemLink docItem={nextItem} isNext />}
           </div>
