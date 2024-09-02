@@ -1,21 +1,26 @@
+1gb
 1px
 2fa
 8f
 8fdevelop
+abc123
 abtesting
 ach
 activedirectory
+addr
 agile
 ai
 akash
 allowfullscreen
 amb
 aname
+announcementmarquee
 api
 apis
 artifacts
 astro
 astrojs
+async
 audit-logs
 authy
 auto-scaling
@@ -29,6 +34,7 @@ backend
 backlog
 bdd
 beaconing
+bg
 biconomy
 big-data
 big-query
@@ -58,6 +64,9 @@ cloudmos
 cname
 codebase
 coinbase
+commitfeat1
+commitfeat2
+commitfeat3
 compliance
 config
 connext
@@ -74,7 +83,6 @@ csv
 cta
 cta's
 customtitlesbydirectoryname
-cvs
 cvs
 cyberattack
 cybercrime
@@ -124,6 +132,7 @@ environment-variables
 envvars
 eth
 ethereum
+eu
 everytime
 evm
 exploitation
@@ -134,8 +143,10 @@ farcaster
 filecoin
 fleek
 fleekxyz
+flk
 fmt
 frameborder
+frontend
 frontends
 functional-programming
 functions'
@@ -162,6 +173,7 @@ hashing
 hexadecimal
 hostname
 hostnames
+hotfixes
 html
 http
 https
@@ -201,6 +213,7 @@ locked-in
 lodash
 login
 logout
+lon
 machine-learning
 macos
 malware
@@ -215,8 +228,8 @@ memorystorage
 merkle
 message
 metamask
-metamask
 mev
+microsoft
 middleware
 minification
 ml
@@ -245,6 +258,8 @@ oauth
 object-oriented
 objects
 ok
+onboarding
+onboarded
 onchain
 online
 openssl
@@ -292,6 +307,7 @@ q1
 q2
 q3
 q4
+qol
 query
 rabbitmq
 rails
@@ -426,6 +442,7 @@ unitesting
 update
 upgrade
 upstream
+upto
 uri
 url
 usd
@@ -437,6 +454,7 @@ username
 users'
 uuid
 ux
+v0
 v2
 v3
 validation

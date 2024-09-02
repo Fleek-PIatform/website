@@ -1058,8 +1058,7 @@ A video can be declared in the markdown as follows:
 
 ```html
 <video width="100%" height="auto" autoplay loop controls>
-  <source src="./ens_automatic_setup.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
+
 </video>
 ```
 
@@ -1069,8 +1068,7 @@ When visiting the site content, the file will be surfaced absolutely, e.g. `<sou
 
 ```html
 <video width="100%" height="auto" autoplay loop controls>
-  <source src="ens_automatic_setup.mp4" type="video/mp4" />
-  Your browser does not support the video tag.
+
 </video>
 ```
 

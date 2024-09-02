@@ -3,8 +3,6 @@ import '@styles/globals.css';
 import '@styles/docPage.css';
 import '@styles/admonition.css';
 import BaseHtml from '@layouts/BaseHtml.astro';
-import InjectCodeCopy from '@components/InjectCodeCopy.astro';
-
 import {
   generateSidebarDSByUserOrder,
   type GenerateSidebarResponse,
@@ -77,8 +75,12 @@ const indexNameDocs = import.meta.env.PUBLIC_MEILISEARCH_INDEX_DOCS;
 // TODO: Fails after prod build
 const isHome = Astro.url.pathname === '/docs';
 
-const slug = `docs/${data.slug}`;
-const image = '';
+const slug = generateFullSlug({
+  basePath: settings.site.metadata.docs.slug,
+  slug: data.slug === 'index' ? '' : data.slug,
+});
+
+const image = settings.site.metadata.docs.image;
 ---
 
 <BaseHtml
@@ -107,7 +109,6 @@ const image = '';
       <div class="min-w-0 px-32">
         <article class="doc">
           <slot />
-          <div class="mt-12 flex flex-row gap-20">
             {prevItem && <DocItemLink docItem={prevItem} />}
             {nextItem && <DocItemLink docItem={nextItem} isNext />}
           </div>

@@ -107,7 +107,8 @@ export const NavBarDefault: MenuSettingsItem[] = [
       },
       {
         label: 'Support Center',
-        url: '/support',
+        url: supportUrlDefault,
+
         openInNewTab: true,
         description: 'Get help',
         icon: '/svg/community-navbar-icon.svg',
