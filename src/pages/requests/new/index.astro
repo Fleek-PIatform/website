@@ -1,0 +1,16 @@
+---
+import NewRequestForm from '@components/Support/form/NewRequestForm';
+import Layout from '@layouts/SupportPage.astro';
+import settings from '@base/settings.json';
+---
+
+<Layout
+  title={settings.site.metadata.requests.submitRequest.title}
+  image={settings.site.metadata.requests.submitRequest.image}
+  slug={settings.site.metadata.requests.submitRequest.slug}
+  description={settings.site.metadata.requests.submitRequest.description}
+>
+  <main class="container mx-auto min-h-screen">
+    <NewRequestForm client:load />
+  </main>
+</Layout>

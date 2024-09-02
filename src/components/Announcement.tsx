@@ -4,7 +4,7 @@ import Text from '@components/Text';
 import Marquee from 'react-fast-marquee';
 import settings from '@base/settings.json';
 
-const announcement = `⚡ ${settings.site.annoucement.message} ⚡`; //character limit: 130
+const announcement = `⚡ ${settings.site.annoucementMarquee.message} ⚡`; //character limit: 130
 
 interface AnnouncementProps {
   hasMargin?: boolean;
@@ -22,13 +22,13 @@ const Announcement: React.FC<AnnouncementProps> = ({
 
   return (
     <a
-      href={settings.site.annoucement.url}
+      href={settings.site.annoucementMarquee.url}
       rel="noopener noreferrer"
       className={`${hasMargin && 'mb-16 '}opacity-100 transition hover:opacity-80`}
     >
       <Container>
         <div
-          className={`${hasMargin && 'my-8'} overflow-hidden rounded-16 border border-gray-dark-6 bg-ui-mid-black px-16 py-8`}
+          className={`${hasMargin && 'my-8'} overflow-hidden rounded-16 border border-yellow-dark-7 bg-ui-mid-black px-16 py-8`}
         >
           <div className="overflow-hidden">
             <Text className="whitespace-nowrap text-center lg:hidden" style="m">

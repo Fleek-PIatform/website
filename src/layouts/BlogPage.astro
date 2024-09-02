@@ -1,14 +1,11 @@
 ---
 import '@styles/globals.css';
 import '@styles/blogPage.css';
-import BaseHtml from '@layouts/BaseHtml.astro';
 
-import type { MarkdownHeading } from 'astro';
+import BaseHtml from './BaseHtml.astro';
+import InjectCodeCopy from '@components/InjectCodeCopy.astro';
 
-const data = Astro.props;
-
-const { title, description, image, slug } = Astro.props;
-const currentPage = Astro.url.pathname;
+const { title, description, slug, image } = Astro.props;
 ---
 
 <BaseHtml
@@ -23,4 +20,5 @@ const currentPage = Astro.url.pathname;
   <main class="container min-h-container">
     <slot />
   </main>
+  <InjectCodeCopy />
 </BaseHtml>

@@ -31,11 +31,15 @@ const blogCollection = createCollection('content', z.object({}));
 
 const guidesCollection = createCollection('content', z.object({}));
 
+const billingCollection = createCollection('content', z.object({}));
+
 const templatesCollection = createCollection('content', z.object({}));
 
 const referencesCollection = createCollection('content', z.object({}));
 
 const legalCollection = createCollection('content', z.object({}));
+
+const changelogCollection = createCollection('content', z.object({}));
 
 // Export a single `collections` object to register your collection(s)
 export const collections = {
@@ -45,4 +49,6 @@ export const collections = {
   templates: templatesCollection,
   references: referencesCollection,
   legal: legalCollection,
+  billing: billingCollection,
+  changelog: changelogCollection,
 };
