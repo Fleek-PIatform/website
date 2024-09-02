@@ -72,7 +72,7 @@ export const NavBarDefault: MenuSettingsItem[] = [
       },
       {
         label: 'Changelog',
-        url: '/blog/changelog',
+        url: '/changelog',
         description: 'Our latest developments',
         icon: '/svg/blog-navbar-icon.svg',
       },
@@ -107,7 +107,8 @@ export const NavBarDefault: MenuSettingsItem[] = [
       },
       {
         label: 'Support Center',
-        url: '/support',
+        url: supportUrlDefault,
+
         openInNewTab: true,
         description: 'Get help',
         icon: '/svg/community-navbar-icon.svg',
