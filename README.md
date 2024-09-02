@@ -27,24 +27,35 @@ This repository contains the source code and assets for the Fleek.xyz website, w
         - [Sidebar menu item ordering](#-sidebar-menu-item-ordering)
         - [Override category title](#-override-category-title)
     - [Spell checker](#-spell-checker)
+    - [Announcement Marquee](#announcement-marquee)
     - [Admonitions](#-admonitions)
     - [Navigation bar](#-navigation-bar)
         - [Configuration](#-configuration)
     - [Metadata](#metadata)
         - [Open Graph preview](#open-graph-preview)
         - [Troubleshooting open graph](#troubleshooting-open-graph)
-        - [Customise Blog Categories](#customise-blog-categories)
+        - [Customize Blog Categories](#customize-blog-categories)
 - [Development](#-development)
-    - [Search server](#-search-server)
-      - [Multi-index search](#multi-index-search)
-    - [Delete Indexes](#💣-delete-indexes)
-    - [Images (optimization)](#-images-optimization)
+    - [Services](#services)
+      - [Support](#support)
+        - [Setup the Service](#setup-the-service)
+        - [Tokens](#tokens)
+        - [Local API](#local-api)
+        - [Interact with the API](#interact-with-the-api)
+        - [Production Service Setup](#production-service-setup)
+      - [Search](#🔎-search)
+        - [Health Check](#health-check)
+        - [Indexer](#indexer)
+        - [Put markdown content](#put-markdown-content-development)
+        - [Query via cURL](#query-via-curl)
+        - [Multi-Index Search](#multi-index-search)
+        - [Delete Indexes](#💣-delete-indexes)
+        - [Images (optimization)](#-images-optimization)
 - [Migration](#-migration)
     - [Migrate Gatsby content](#migrate-gatsby-content)
 - [Custom data](#custom-data)
     - [Get latest posts](#get-latest-posts)
-- [Support](#support)
-    - [Local API](#local-api)
+- [Video Content](#video-content)
 
 # Setup
 
@@ -88,9 +99,15 @@ PUBLIC_MEILISEARCH_INDEX_REFERENCES="fleekxyz_website_references"
 PRIVATE_MEILISEARCH_MASTER_KEY=***
 PRIVATE_MEILISEARCH_DOCUMENTS_ADMIN_API_KEY=***
 PUBLIC_MEILISEARCH_DOCUMENTS_CLIENT_API_KEY=***
-PUBLIC_SUPPORT_API="localhost:3331"
-ALLOW_ORIGIN_ADDR="http://localhost:4321"
+PUBLIC_SUPPORT_API_HOST="localhost:3331"
+SUPPORT_ALLOW_ORIGIN_ADDR="http://localhost:4321,https://fleek-xyz-staging.on-fleek.app"
+SUPPORT_RATE_LIMIT_WINDOW_MINUTES=60
+SUPPORT_RATE_LIMIT_MAX_REQ=15
+SUPPORT_RATE_LIMIT_PATHS="/tickets"
+NODE_ENV=develop
 ```
+
+💡 The SUPPORT_ALLOW_ORIGIN_ADDR and SUPPORT_RATE_LIMIT_PATHS are comma separated values (csv). the MEILISEARCH_DOCUMENTS_CLIENT_API_KEY is required when querying staging, production environments which should be provided in the headers.
 
 ## 🏗️ Build
 
@@ -215,6 +232,8 @@ In the world where text is text, I show you an image:
 
 ![My image](./my-image.jpg)
 ```
+
+💡 Would like to place static video content? Learn how to work with video content [here](#video-content).
 
 ## 📝 Docs
 
@@ -420,7 +439,7 @@ You can release to production following a linear strategy. This assumes that the
 
 Use-case examples:
 - The team has merged some feature branches into develop identified as commit hash "abc123" and want to release upto to the commit history hash "abc123" onto "main". By doing this they expect the build process to occur and deploy into the Fleek Platform
-- The team has merged several feature branches into develop identified as commit hashes "commitFeat1", "commitFeat2" and "commitFeat3" by this historical order. It's decided to release everything in commit history until "commitFeat1", but not "commitFeat2" and "commitFeat3". Although, it'd be wiser to keep the feature branches in pending state as "develop" should always be in a ready state for testing and release as the team may want to release some quick hotfixes, etc
+- The team has merged several feature branches into develop identified as commit hashes `commitFeat1`, `commitFeat2` and `commitFeat3` by this historical order. It's decided to release everything in commit history until `commitFeat1`, but not `commitFeat2` and `commitFeat3`. Although, it'd be wiser to keep the feature branches in pending state as "develop" should always be in a ready state for testing and release as the team may want to release some quick hotfixes, etc
 
 To release to production open the actions tab [here](https://github.com/fleek-platform/website/actions).
 
@@ -435,6 +454,28 @@ Find the spell checker among other checks, under the checks component at the ver
 It should be similar to the following:
 
 ![Locate the spell checker in CI/CD](public/images/repo/spell-checker-in-cicd.png?202406011433)
+
+## Announcement Marquee
+
+The Announcement Marquee is placed at the very top of the site. To enable
+
+1) Open the settings file located at `/src/settings.json`.
+2) Locate the `announcementMarquee` under "site"
+
+```
+"site": {
+  ...
+  "annoucementMarquee": {
+    "message": "Introducing Fleek Functions: lightning-fast edge functions built on Fleek Network’s onchain cloud infrastructure. Read more here.",
+    "url": "/blog/announcements/introducing-fleek-functions",
+    "visible": true
+  },
+  ...
+}
+```
+
+3) Edit the message and url
+4) Set "visible" to true
 
 ## 🎯 Admonitions
 
@@ -622,9 +663,9 @@ For example, let's say that you want to preview the Blog post for "Introducing F
 
 It's important to note that if you encounter issues with Open Graph meta tags not displaying correctly on a platform, the first step should be to utilize a validator tool, similar to the one provided in the URL above. This is because our system automatically provides the metadata content, but discrepancies may arise if certain requirements are overlooked by the platform, e.g., persistent cache. Additionally, if a specific URL encounters problems due to previous issues, you can circumvent caching by appending a query parameter to the end of the URL. For example, modifying [https://fleek.xyz/blog/announcements/introducing-fleek-functions](https://fleek.xyz/blog/announcements/introducing-fleek-functions) to [https://fleek.xyz/blog/announcements/introducing-fleek-functions?202406101836](https://fleek.xyz/blog/announcements/introducing-fleek-functions?202406101836). This method is recommended as a preliminary troubleshooting step to identify the source of the problem.
 
-### Customise Blog Categories
+### Customize Blog Categories
 
-You can customise the Blog category list page metadata fields by editing the settings file in [./src/settings.json].
+You can customize the Blog category list page metadata fields by editing the settings file in [./src/settings.json].
 
 ```json
 "blog": {
@@ -652,21 +693,7 @@ You can extend the category field with any category name. Notice that category n
 
 # 👷‍♀️Development
 
-## 🔎 Search
-
-### Serve (Development)
-
-Search is provided by [Meilisearch](https://www.meilisearch.com/). The local search server is provided as a [Docker](https://www.docker.com/) image, which you have to have installed and running.
-
-You can start a server locally by running the command:
-
-```sh
-npm run search:serve
-```
-
-⚠️ You'll see a warning message "No master key was found" that can be ignored for local environment development work. If for some reason you want to have a master key, modify the `search:serve` script to include it.
-
-### Cloud
+## Services
 
 The project services have the following naming convention:
 
@@ -674,9 +701,128 @@ The project services have the following naming convention:
 <service-type>-<environment>-<region>-<instance-number>.<domain>  
 ```
 
-The service hostname is `meilisearch-prod-eu-lon-1-01.flkservices.io`. The default location of the service file is `/etc/systemd/system/meilisearch.service`.
+### Support
+
+Support's based in ZenDesk, as an external provider that provides an API to interact with the service. The following documentation provides information to interact with the proxy server.
+
+### Setup the service
+
+The application should get the endpoint URL from an environment variable named `PUBLIC_SUPPORT_API_HOST`.
+
+Learn how to setup by reading the section [environment variables](#environment-variables).
+
+### Tokens
+
+The environment should have the following variables set up for the corresponding account.
+
+You may want to create a `.env` file to hold these environment variables, or in your shell profile.
+
+```sh
+PRIVATE_ZENDESK_EMAIL="xxxx"
+PRIVATE_ZENDESK_API_KEY="xxxx"
+PRIVATE_ZENDESK_HOSTNAME="xxxx"
+```
+
+⚠️ Setting up the ZenDesk proxy service? Learn more about the ZenDesk's proxy service [here](https://github.com/fleek-platform/website/tree/develop/Services/ZenDesk)
+
+### Local API
+
+A proxy service to interact with ZenDesk is available and can be run locally.
+
+Start the local API by running:
+
+```sh
+npm run support:local_api
+```
+
+💡 During implementation the API URL should be provided as an environment variable.
+
+### Interact with the API
+
+**/health**
+
+Hit the /health endpoint for health checks
+
+```sh
+curl -X GET 'localhost:3331/health
+```
+
+**/ticket**
+
+Hit the /ticket endpoint to create a ticket for a user **email**, particular **topic** and comment **query**.
+
+```
+curl \
+  -X POST \
+  -H "Content-Type: application/x-www-form-urlencoded" \
+  -d "email=<CLIENT-EMAIL-ADDRESS>&subject=<SYSTEM-TOPIC>&comment=<USER-QUERY>"" http://localhost:3331/ticket
+```
+
+The **email** is a valid email address, the **topic** should be related to the **query** template. The **query** should correspond and be of a well-known format or template.
+
+Here's an example for **query** template:
+
+```sh
+subject: <System Support Topic> | <User title>
+description: <User text>
+attachments: <User attachments>
+```
+
+A result ticket could look like:
+
+```sh
+subject: Billing | Inquiry Regarding Unprocessed USDC Token Transfer
+description: Dear Fleek, I hope this message finds you well. I am writing to seek clarification regarding an outstanding transaction related to my account. On xxx, I initiated a transfer of xxx USDC tokens from my account to xxx. However, upon checking my transaction history, it appears that this transfer has not been processed.
+attachments: https://fleek-storage/user-file.png
+```
+
+### Production Service Setup
+
+The support service hostname is `support-prod-eu-lon-1-01.flkservices.io` (endpoint URL).
+
+The production environment variable should be set. Declare the hostname:
+
+```
+PUBLIC_SUPPORT_API_HOST="https://support-prod-eu-lon-1-01.flkservices.io"
+```
+
+The default location of the service file is `/lib/systemd/system/support-prod-eu-lon-1-01.flkservices.io.service`.
+
+To configure Support with environment variables in a cloud-hosted instance, modify the Support's env file. Its default location is `~/fleek-platform/website/.env`.
+
+After editing your configuration options, reload the daemon:
+
+```sh
+sudo systemctl daemon-reload
+```
+
+Restart the service:
+
+```sh
+sudo systemctl restart support-prod-eu-lon-1-01.flkservices.io.service
+```
+
+Check the status:
+
+```sh
+sudo systemctl status support-prod-eu-lon-1-01.flkservices.io.service
+```
+
+⚠️ Troubleshooting ZenDesk's proxy? Learn more about it [here](https://github.com/fleek-platform/website/tree/develop/Services/ZenDesk)
+
+### 🔎 Search
+
+The search service is based on Meilisearch [here](https://meilisearch.com).
+
+The search service hostname is `meilisearch-prod-eu-lon-1-01.flkservices.io`. The default location of the service file is `/etc/systemd/system/meilisearch.service`.
 
 To configure Meilisearch with environment variables in a cloud-hosted instance, modify Meilisearch's env file. Its default location is `/var/opt/meilisearch/env`.
+
+DNS Record
+
+```
+A	meilisearch-prod-eu-lon-1-01.flkservices.io	165.232.41.164
+```
 
 After editing your configuration options, relaunch the Meilisearch service:
 
@@ -768,6 +914,18 @@ Delete Index data by running the command:
 ```sh
 npm run search:delete_indexes
 ```
+
+### Serve (Development)
+
+Search is provided by [Meilisearch](https://www.meilisearch.com/). The local search server is provided as a [Docker](https://www.docker.com/) image, which you have to have installed and running.
+
+You can start a server locally by running the command:
+
+```sh
+npm run search:serve
+```
+
+⚠️ You'll see a warning message "No master key was found" that can be ignored for local environment development work. If for some reason you want to have a master key, modify the `search:serve` script to include it.
 
 ## 📸 Images (Optimization)
 
@@ -887,75 +1045,34 @@ You'd get a list to iterate over as the following:
 
 Everytime a build happens, the static JSON data should be updated.
 
-## Support
+## Video Content
 
-ZenDesk is an external provider that provides an API to interact with the service. The following documentation provides information to interace with the proxy server.
+Place video content relative to the content. We must keep it in context of the content due to portability. At time of writing, Astro doesn't optimize video and suggests placing these in the public directory which would break the portability requirement.
 
-### Setup
+💡 Video should be web optimized. Keep it short. At time of writing the maximum video file size is 6 MB. If lengthy, it's much preferred to distribute it on YouTube or similar.
 
-The application should get the endpoint URL from an environment variable named `PUBLIC_SUPPORT_API`.
+To mitigate it, the Fleek Website build process includes handling of video files (mp4). It copies the content into the distribution directory to allow us to access it relatively. It doesn't optimize the files, thus video files should be web encoded by the author. For example, if you are on MacOS use [Handbrake](https://handbrake.fr) to optimize the videos, or [ffmpeg](https://www.ffmpeg.org) for any operating system.
 
-Learn how to setup by reading the section [environment variables](#environment-variables).
+A video can be declared in the markdown as follows:
 
-### Tokens
-
-The environment should have the following variables set up for the corresponding account.
-
-You may want to create a `.env` file to hold these environment variables, or in your shell profile.
-
-```sh
-PRIVATE_ZENDESK_EMAIL="xxxx"
-PRIVATE_ZENDESK_API_KEY="xxxx"
-PRIVATE_ZENDESK_HOSTNAME="xxxx"
+```html
+<video width="100%" height="auto" autoplay loop controls>
+ <source src="./ens_automatic_setup.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+</video>
 ```
 
-### Local API
+💡 Including a `./`, which means relative to the current file, the path will be replaced by its absolute pathname.
 
-A proxy service to interact with ZenDesk is available and can be run locally.
+When visiting the site content, the file will be surfaced absolutely, e.g. `<source src="https://fleek.xyz/blog/announcements/fleek-release-notes-v004/ens_automatic_setup.mp4" type="video/mp4">`.
 
-Start the local API by running:
-
-```sh
-npm run support:local_api
+```html
+<video width="100%" height="auto" autoplay loop controls>
+ <source src="ens_automatic_setup.mp4" type="video/mp4">
+ Your browser does not support the video tag.
+</video>
 ```
 
-💡 During implementation the API URL should be provided as an environment variable.
+❌ If missing a trailing slash it'll look for the file in the wrong location. At time of writing, trailing slash is not required to resolve the site sections, thus its best practice to declare the file location with `./` as in `<source src="./my-video-filename.mp4">` to avoid confusion.
 
-### Interact with the API
-
-**/health**
-
-Hit the /health endpoint for health checks
-
-```sh
-curl -X GET 'localhost:3331/health
-```
-
-**/ticket**
-
-Hit the /ticket endpoint to create a ticket for a user **email**, particular **topic** and comment **query**.
-
-```
-curl \
-  -X POST \
-  -H "Content-Type: application/x-www-form-urlencoded" \
-  -d "email=<CLIENT-EMAIL-ADDRESS>&subject=<SYSTEM-TOPIC>&comment=<USER-QUERY>"" http://localhost:3331/ticket
-```
-
-The **email** is a valid email address, the **topic** should be related to the **query** template. The **query** should correspond and be of a well-known format or template.
-
-Here's an example for **query** template:
-
-```sh
-subject: <System Support Topic> | <User title>
-description: <User text>
-attachments: <User attachments>
-```
-
-A result ticket could look like:
-
-```sh
-subject: Billing | Inquiry Regarding Unprocessed USDC Token Transfer
-description: Dear Fleek, I hope this message finds you well. I am writing to seek clarification regarding an outstanding transaction related to my account. On xxx, I initiated a transfer of xxx USDC tokens from my account to xxx. However, upon checking my transaction history, it appears that this transfer has not been processed.
-attachments: https://fleek-storage/user-file.png
-```
+💡 At time of writing its assumed that video files are put in the directory of a markdown file named `index.md(x)`, e.g. `src/content/guides/my-guide/index.md` and `src/content/guides/my-guide/my-video.mp4`. It's also expected that the base path is the directory of the content and not cross content. It's important to respect the convention for portability, otherwise you'll find unexpected results.

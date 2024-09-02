@@ -1,7 +1,5 @@
 import type { MenuSettingsItem } from './index';
 
-const supportUrlDefault = 'https://support.fleek.xyz';
-
 // Warning: when editing enable Typescript LSP
 // to avoid any typos.
 //
@@ -74,7 +72,7 @@ export const NavBarDefault: MenuSettingsItem[] = [
       },
       {
         label: 'Changelog',
-        url: '/blog/changelog',
+        url: '/changelog',
         description: 'Our latest developments',
         icon: '/svg/blog-navbar-icon.svg',
       },
@@ -108,8 +106,9 @@ export const NavBarDefault: MenuSettingsItem[] = [
         icon: '/svg/media-navbar-icon.svg',
       },
       {
-        label: 'Support center',
+        label: 'Support Center',
         url: supportUrlDefault,
+
         openInNewTab: true,
         description: 'Get help',
         icon: '/svg/community-navbar-icon.svg',
@@ -145,7 +144,7 @@ export const NavBarDocs: MenuSettingsItem[] = [
   },
   {
     label: 'Support',
-    url: supportUrlDefault,
+    url: '/support',
     openInNewTab: true,
   },
 ];

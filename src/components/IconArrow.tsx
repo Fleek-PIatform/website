@@ -2,20 +2,12 @@ import React from 'react';
 
 interface IconProps {
   className: string;
-  transform?: string;
-}
-
-export const IconArrowRight: React.FC<IconProps> = ({
-  className,
-  transform = '',
-}) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     width="20"
     height="20"
     fill="none"
     className={className}
-    transform={transform}
   >
     <path
       fill="currentColor"
@@ -27,5 +19,4 @@ export const IconArrowRight: React.FC<IconProps> = ({
 );
 
 export const IconArrowLeft: React.FC<IconProps> = ({ className }) => (
-  <IconArrowRight className={className} transform="scale(-1, 1)" />
 );

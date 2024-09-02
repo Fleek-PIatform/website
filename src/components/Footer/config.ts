@@ -2,7 +2,6 @@ import settings from '@base/settings.json';
 
 const {
   careersUrl,
-  supportExternalUrl,
   reportAbuseUrl,
   statusURl,
   mediaKit,
@@ -23,7 +22,7 @@ export default {
     },
     {
       text: 'Changelog',
-      url: '/blog/changelog/',
+      url: '/changelog/',
       target: '_blank',
       rel: 'noopener noreferrer',
     },
@@ -65,9 +64,7 @@ export default {
     },
     {
       text: 'Contact us',
-      url: reportAbuseUrl,
-      target: '_blank',
-      rel: 'noopener noreferrer',
+      url: '/requests/new/',
     },
   ],
   product: [
@@ -107,8 +104,7 @@ export default {
     },
     {
       text: 'Support',
-      url: supportExternalUrl,
-      target: '_blank',
+      url: '/support',
       rel: 'noopener noreferrer',
     },
     {
