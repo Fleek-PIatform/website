@@ -1,3 +1,4 @@
+1gb
 1px
 2fa
 8f
@@ -19,6 +20,7 @@ apis
 artifacts
 astro
 astrojs
+async
 audit-logs
 authy
 auto-scaling
@@ -32,6 +34,7 @@ backend
 backlog
 bdd
 beaconing
+bg
 biconomy
 big-data
 big-query
@@ -140,8 +143,10 @@ farcaster
 filecoin
 fleek
 fleekxyz
+flk
 fmt
 frameborder
+frontend
 frontends
 functional-programming
 functions'
@@ -224,6 +229,7 @@ merkle
 message
 metamask
 mev
+microsoft
 middleware
 minification
 ml
@@ -252,6 +258,8 @@ oauth
 object-oriented
 objects
 ok
+onboarding
+onboarded
 onchain
 online
 openssl
@@ -299,6 +307,7 @@ q1
 q2
 q3
 q4
+qol
 query
 rabbitmq
 rails
@@ -445,6 +454,7 @@ username
 users'
 uuid
 ux
+v0
 v2
 v3
 validation
