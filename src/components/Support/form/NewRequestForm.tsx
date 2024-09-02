@@ -1,11 +1,14 @@
-import { useState, type FormEvent } from 'react';
+import { useEffect, useState, type FormEvent } from 'react';
 import { type FormValuesType } from './ReportSiteForm';
 import Input from './ui/Input';
 import ToolTip from './ui/ToolTip';
+import toast from 'react-hot-toast';
 import Button from './ui/Button';
-import { submitForm } from './utils';
+import { checkHealthStatus, emailRegex, submitForm } from './utils';
 import FormTitle from './ui/FormTitle';
 import { removeProtocolFromUrl } from '@utils/url';
+import Spinner from '@components/Spinner';
+import SupportUnavailable from '../SupportUnavailable';
 
 export const { zenDeskEndpoint } = (() => {
   const zenDeskEndpoint = removeProtocolFromUrl(
@@ -27,30 +30,80 @@ const defaultFormValues = {
   email: '',
   subject: '',
   comment: '',
+  name: 'Username',
 };
+
+let formSubmissionObject;
 
 function NewRequestForm() {
   const [formValues, setFormValues] = useState<FormValuesType>({
     ...defaultFormValues,
   });
+  const [isHealthy, setIsHealthy] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isButtonDisabled, setIsButtonDisabled] = useState<boolean>(true);
 
-  const handleInputChange = (name: string, value: string | FileList) => {
+  const handleInputChange = (name: string, value: string) => {
     setFormValues((prevValues) => ({
       ...prevValues,
       [name]: value,
     }));
+
+    if (name === 'comment') {
+      const shouldBeDisabled = value.trim().length < 30;
+
+      if (shouldBeDisabled !== isButtonDisabled) {
+        setIsButtonDisabled(shouldBeDisabled);
+      }
+    }
   };
 
   const resetFormValues = () => {
     setFormValues({
       ...defaultFormValues,
     });
+    setIsButtonDisabled(true);
   };
 
   const handleFormSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
     await submitForm(formValues, resetFormValues);
   };
+
+  async function fetchHealthStatus() {
+    setIsLoading(true);
+    try {
+      const healthStatus = await checkHealthStatus();
+      setIsHealthy(healthStatus);
+      if (!healthStatus) {
+        throw new Error('Health status failure');
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(
+        'Our support system is currently experiencing issues. Please report this to our team.',
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchHealthStatus();
+  }, []);
+
+  if (isLoading) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner className="w-[70px] md:w-[100px] xl:w-[6%]" />
+      </div>
+    );
+  }
+
+  if (!isHealthy) {
+    return <SupportUnavailable />;
+  }
 
   return (
     <form
@@ -61,7 +114,7 @@ function NewRequestForm() {
         <FormTitle
           title={'Submit a request'}
           subTitle={
-            "If you're having issues with Fleek Platform, we're here to help! Please share details about the issue you're experiencing in the form below."
+            "If you're having issues with Fleek's platform, we're here to help! Please share details about the issue you're experiencing in the form below."
           }
         />
         <div className="mt-[3rem]">
@@ -74,6 +127,7 @@ function NewRequestForm() {
             name="email"
             value={formValues.email}
             isRequired
+            pattern={`${emailRegex}`}
             onChange={(value) => handleInputChange('email', value)}
             label="Your email address"
           />
@@ -94,6 +148,8 @@ function NewRequestForm() {
           <Input
             type="textarea"
             name="comment"
+            minLength={30}
+            maxLength={1000}
             value={formValues.comment}
             isRequired
             bottomText="Description must contain at least 30 characters"
@@ -102,7 +158,7 @@ function NewRequestForm() {
           />
         </div>
 
-        <Button />
+        <Button isDisabled={isButtonDisabled} />
       </div>
     </form>
   );

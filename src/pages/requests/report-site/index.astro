@@ -5,8 +5,10 @@ import settings from '@base/settings.json';
 ---
 
 <Layout
-  title={settings.site.metadata.requests.title}
-  description={settings.site.metadata.requests.description}
+  title={settings.site.metadata.requests.reportSite.title}
+  image={settings.site.metadata.requests.reportSite.image}
+  slug={settings.site.metadata.requests.reportSite.slug}
+  description={settings.site.metadata.requests.reportSite.description}
 >
   <main class="container mx-auto min-h-screen">
     <ReportSiteForm client:load />
